@@ -31,12 +31,14 @@ jobs:
       with:
         java-version: '17'
         distribution: 'temurin'
-        cache: 'gradle'
-        cache-dependency-path: |
-          **/*.gradle*
-          **/**/gradle-wrapper.properties
-    - name: Set up Gradle (caches wrapper & deps)
-      uses: gradle/actions/setup-gradle@v3
+    - name: Cache Dependencies
+      uses: actions/cache@v4
+      with:
+        # Avoid caching the generated artifacts
+        path: |
+          ~/.m2/repository/*
+          !~/.m2/repository/com/formkiq
+        key: "${{ matrix.runtime }}-maven-${{ hashFiles('**/pom.xml') }}"
     - name: Build Project
       run: ./gradlew build --no-daemon
     - name: Upload test reports
