@@ -31,7 +31,7 @@ jobs:
       with:
         java-version: '17'
         distribution: 'temurin'
-        arguments: build --no-daemon
+    - run: ./gradlew build --no-daemon
     - name: Upload test reports
       uses: actions/upload-artifact@v4
       if: always()
