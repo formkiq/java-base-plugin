@@ -29,6 +29,8 @@ jobs:
       timeout-minutes: 10
       uses: actions/setup-java@v4
       with:
+        java-version: '17'
+        distribution: 'temurin'
         arguments: build --no-daemon
     - name: Upload test reports
       uses: actions/upload-artifact@v4
