@@ -1,14 +1,18 @@
 plugins {
-  id 'groovy-gradle-plugin'
+  id 'java-gradle-plugin'
+  id "com.gradle.plugin-publish" version "2.0.0"
   id 'com.diffplug.spotless' version '7.2.1'
 }
+
+group   'com.formkiq.gradle'
+version '1.0.0'
 
 allprojects {
   apply plugin: 'com.diffplug.spotless'
 }
 
 repositories {
-  gradlePluginPortal() // so that external plugins can be resolved in dependencies section
+  gradlePluginPortal()
 }
 
 dependencies {
@@ -35,3 +39,32 @@ spotless {
 }
 
 spotlessCheck.dependsOn spotlessApply
+
+gradlePlugin {
+  website = 'https://github.com/formkiq/java-base-plugin'
+  vcsUrl  = 'https://github.com/formkiq/java-base-plugin'
+  plugins {
+    javaBase {
+      id = "com.formkiq.gradle.java-base"
+      displayName = "FormKiQ Java Base Conventions"
+      description = "Applies Java 17 toolchain, Spotless, SpotBugs, Checkstyle, Versions plugin, and standard repos."
+      implementationClass = "com.formkiq.gradle.JavaBasePlugin"
+      tags = [
+        "java",
+        "conventions",
+        "spotless",
+        "spotbugs",
+        "checkstyle"
+      ]
+    }
+  }
+}
+
+publishing {
+  publications {
+    pluginMaven(MavenPublication) {
+    }
+  }
+}
+
+check.dependsOn(tasks.publishToMavenLocal)
