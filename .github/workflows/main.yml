@@ -36,8 +36,8 @@ jobs:
       with:
         # Avoid caching the generated artifacts
         path: |
+          ~/.gradle/*
           ~/.m2/repository/*
-          !~/.m2/repository/com/formkiq
         key: "${{ matrix.runtime }}-maven-${{ hashFiles('**/pom.xml') }}"
     - name: Build Project
       run: ./gradlew build --no-daemon
