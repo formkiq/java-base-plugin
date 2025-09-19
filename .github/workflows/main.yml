@@ -31,14 +31,8 @@ jobs:
       with:
         java-version: '17'
         distribution: 'temurin'
-    - name: Cache Dependencies
-      uses: actions/cache@v4
-      with:
-        # Avoid caching the generated artifacts
-        path: |
-          ~/.gradle/*
-          ~/.m2/repository/*
-        key: "${{ matrix.runtime }}-maven-${{ hashFiles('**/pom.xml') }}"
+    - name: Set up Gradle
+      uses: gradle/actions/setup-gradle@v4
     - name: Build Project
       run: ./gradlew build --no-daemon
     - name: Upload test reports
