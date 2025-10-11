@@ -22,7 +22,7 @@ Features:
 Using the [plugins DSL](https://docs.gradle.org/current/userguide/plugins.html#sec:plugins_block):
 ```groovy
 plugins {
-    id 'com.formkiq.gradle.java-base' version '1.0.2'
+    id 'com.formkiq.gradle.java-base' version '1.0.3'
 }
 ```
 
@@ -35,7 +35,7 @@ buildscript {
     }
   }
   dependencies {
-    classpath "com.formkiq.gradle:java-base:1.0.2"
+    classpath "com.formkiq.gradle:java-base:1.0.3"
   }
 }
 
@@ -46,7 +46,7 @@ apply plugin: "com.formkiq.gradle.java-base"
 Using the [plugins DSL](https://docs.gradle.org/current/userguide/plugins.html#sec:plugins_block):
 ```kotlin
 plugins {
-    id("com.formkiq.gradle.java-base") version "1.0.2"
+    id("com.formkiq.gradle.java-base") version "1.0.3"
 }
 ```
 
@@ -59,7 +59,7 @@ buildscript {
     }
   }
   dependencies {
-    classpath("com.formkiq.gradle:java-base:1.0.2")
+    classpath("com.formkiq.gradle:java-base:1.0.3")
   }
 }
 
