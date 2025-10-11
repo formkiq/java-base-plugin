@@ -19,7 +19,7 @@ dependencies {
   implementation 'com.github.spotbugs:com.github.spotbugs.gradle.plugin:6.4.1'
   implementation 'com.diffplug.spotless:com.diffplug.spotless.gradle.plugin:7.2.1'
   implementation 'com.github.ben-manes.versions:com.github.ben-manes.versions.gradle.plugin:0.52.0'
-  implementation 'com.formkiq.gradle.graalvm-native-plugin:com.formkiq.gradle.graalvm-native-plugin.gradle.plugin:1.7.3'
+  implementation 'com.formkiq.gradle.graalvm-native-plugin:com.formkiq.gradle.graalvm-native-plugin.gradle.plugin:1.7.4'
   testImplementation platform("org.spockframework:spock-bom:2.3-groovy-4.0")
   testImplementation 'org.spockframework:spock-core'
 }
