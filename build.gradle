@@ -5,7 +5,7 @@ plugins {
 }
 
 group   'com.formkiq.gradle'
-version '1.0.0'
+version '1.0.1'
 
 allprojects {
   apply plugin: 'com.diffplug.spotless'
@@ -29,6 +29,11 @@ tasks.named('test', Test) {
 }
 
 spotless {
+  spotless {
+    java {
+      eclipse().sortMembersEnabled(true).configFile rootProject.file("spotless.eclipseformat.xml")
+    }
+  }
   groovyGradle {
     target '**/*.gradle'
     greclipse()
@@ -67,4 +72,5 @@ publishing {
   }
 }
 
+spotlessJavaCheck.dependsOn 'spotlessJavaApply'
 check.dependsOn(tasks.publishToMavenLocal)

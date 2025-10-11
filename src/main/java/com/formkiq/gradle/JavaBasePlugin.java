@@ -1,6 +1,7 @@
 package com.formkiq.gradle;
 
 import com.diffplug.gradle.spotless.SpotlessExtension;
+import com.diffplug.spotless.extra.wtp.EclipseWtpFormatterStep;
 import com.github.spotbugs.snom.SpotBugsExtension;
 import org.gradle.api.Plugin;
 import org.gradle.api.Project;
@@ -20,6 +21,8 @@ public class JavaBasePlugin implements Plugin<Project> {
 
   /** Checkstyle Version. */
   private static final String CHECKSTYLE_TOOL_VERSION = "10.12.4";
+  /** Java version. */
+  private static final int JAVA_VERSION = 17;
 
   @Override
   public void apply(Project root) {
@@ -39,16 +42,18 @@ public class JavaBasePlugin implements Plugin<Project> {
       // Repositories
       p.getRepositories().mavenLocal();
       p.getRepositories().mavenCentral();
-       p.getRepositories().maven(repo -> repo.setUrl("https://central.sonatype.com/repository/maven-snapshots/"));
+      p.getRepositories()
+          .maven(repo -> repo.setUrl("https://central.sonatype.com/repository/maven-snapshots/"));
 
       // Java toolchain 17
       JavaPluginExtension java = p.getExtensions().getByType(JavaPluginExtension.class);
-      java.getToolchain().getLanguageVersion().set(JavaLanguageVersion.of(17));
+      java.getToolchain().getLanguageVersion().set(JavaLanguageVersion.of(JAVA_VERSION));
 
       // Spotless
       p.getExtensions().configure(SpotlessExtension.class, (SpotlessExtension s) -> {
         s.java(j -> {
-          j.eclipse().sortMembersEnabled(true).configFile(p.getRootProject().file("spotless.eclipseformat.xml"));
+          j.eclipse().sortMembersEnabled(true)
+              .configFile(p.getRootProject().file("spotless.eclipseformat.xml"));
           j.removeUnusedImports();
           j.removeWildcardImports();
           j.licenseHeaderFile(p.getRootProject().file("LICENSE"));
@@ -60,12 +65,22 @@ public class JavaBasePlugin implements Plugin<Project> {
           g.trimTrailingWhitespace();
           g.endWithNewline();
         });
+        s.json(j -> {
+          j.target("*.json", "**/*.json");
+          j.prettier();
+        });
+
+        s.format("xml", f -> {
+          f.target("*.xml", "**/*.xml");
+          f.eclipseWtp(EclipseWtpFormatterStep.XML);
+          f.trimTrailingWhitespace();
+          f.endWithNewline();
+        });
       });
 
       // SpotBugs
-      p.getExtensions().configure(SpotBugsExtension.class, sb ->
-          sb.getExcludeFilter().set(p.file(p.getRootDir() + "/config/gradle/spotbugs-exclude.xml"))
-      );
+      p.getExtensions().configure(SpotBugsExtension.class, sb -> sb.getExcludeFilter()
+          .set(p.file(p.getRootDir() + "/config/gradle/spotbugs-exclude.xml")));
 
       p.getTasks().withType(com.github.spotbugs.snom.SpotBugsTask.class).configureEach(t -> {
         if (t.getReports().findByName("html") == null) {
@@ -90,9 +105,8 @@ public class JavaBasePlugin implements Plugin<Project> {
       });
 
       // Compiler flags
-      p.getTasks().withType(JavaCompile.class).configureEach(jc ->
-          jc.getOptions().getCompilerArgs().add("-Xlint:deprecation")
-      );
+      p.getTasks().withType(JavaCompile.class)
+          .configureEach(jc -> jc.getOptions().getCompilerArgs().add("-Xlint:deprecation"));
 
       // Tests
       p.getTasks().withType(Test.class).configureEach(t -> {
