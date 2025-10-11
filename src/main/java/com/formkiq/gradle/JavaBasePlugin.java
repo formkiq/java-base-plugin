@@ -54,12 +54,15 @@ public class JavaBasePlugin implements Plugin<Project> {
         s.java(j -> {
           j.eclipse().sortMembersEnabled(true)
               .configFile(p.getRootProject().file("spotless.eclipseformat.xml"));
+          j.targetExclude("build/**");
           j.removeUnusedImports();
           j.removeWildcardImports();
+
           j.licenseHeaderFile(p.getRootProject().file("LICENSE"));
         });
         s.groovyGradle(g -> {
           g.target("*.gradle", "**/*.gradle");
+          g.targetExclude("build/**");
           g.greclipse();
           g.leadingTabsToSpaces(2);
           g.trimTrailingWhitespace();
@@ -67,12 +70,14 @@ public class JavaBasePlugin implements Plugin<Project> {
         });
         s.json(j -> {
           j.target("*.json", "**/*.json");
+          j.targetExclude("build/**");
           j.prettier();
         });
 
         s.format("xml", f -> {
           f.target("*.xml", "**/*.xml");
           f.eclipseWtp(EclipseWtpFormatterStep.XML);
+          f.targetExclude("build/**");
           f.trimTrailingWhitespace();
           f.endWithNewline();
         });
