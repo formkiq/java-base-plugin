@@ -112,7 +112,6 @@ public class JavaBasePlugin implements Plugin<Project> {
       // Tests
       p.getTasks().withType(Test.class).configureEach(t -> {
         t.useJUnitPlatform();
-        t.setFailFast(true);
       });
 
       p.afterEvaluate(prj -> {
