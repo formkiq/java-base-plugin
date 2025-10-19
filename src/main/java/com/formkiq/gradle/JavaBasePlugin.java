@@ -112,6 +112,8 @@ public class JavaBasePlugin implements Plugin<Project> {
       // Tests
       p.getTasks().withType(Test.class).configureEach(t -> {
         t.useJUnitPlatform();
+        t.setMinHeapSize("1g");
+        t.setMaxHeapSize("2g");
       });
 
       p.afterEvaluate(prj -> {
