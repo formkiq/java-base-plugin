@@ -1,1 +1,6 @@
+/*
+pluginManagement {
+ includeBuild '../graalvm-native-plugin'
+}*/
+
 rootProject.name = "java-base-plugin"
