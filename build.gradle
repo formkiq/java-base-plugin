@@ -5,7 +5,7 @@ plugins {
 }
 
 group   'com.formkiq.gradle'
-version '1.0.7'
+version '1.0.8'
 
 allprojects {
   apply plugin: 'com.diffplug.spotless'
@@ -20,10 +20,10 @@ dependencies {
   implementation 'com.github.spotbugs:com.github.spotbugs.gradle.plugin:6.4.1'
   implementation 'com.diffplug.spotless:com.diffplug.spotless.gradle.plugin:7.2.1'
   implementation 'com.github.ben-manes.versions:com.github.ben-manes.versions.gradle.plugin:0.52.0'
-  implementation 'com.formkiq.gradle.graalvm-native-plugin:com.formkiq.gradle.graalvm-native-plugin.gradle.plugin:1.7.5'
+  implementation 'com.formkiq.gradle.graalvm-native-plugin:com.formkiq.gradle.graalvm-native-plugin.gradle.plugin:1.7.6'
 
   // can use for local graalvm.native-plugin use
-  // implementation "com.formkiq.gradle:graalvm-native-plugin:1.7.5"
+  // implementation "com.formkiq.gradle:graalvm-native-plugin:1.7.6"
   testImplementation platform("org.spockframework:spock-bom:2.3-groovy-4.0")
   testImplementation 'org.spockframework:spock-core'
 }
