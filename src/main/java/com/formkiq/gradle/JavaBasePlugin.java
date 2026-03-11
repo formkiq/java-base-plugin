@@ -10,9 +10,14 @@ import org.gradle.api.plugins.quality.CheckstyleExtension;
 import org.gradle.api.tasks.compile.JavaCompile;
 import org.gradle.api.tasks.testing.Test;
 import org.gradle.jvm.toolchain.JavaLanguageVersion;
+import org.owasp.dependencycheck.gradle.extension.AnalyzerExtension;
+import org.owasp.dependencycheck.gradle.extension.DependencyCheckExtension;
 
+import java.util.Arrays;
+import java.util.List;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * {@link Plugin} for FormKiQ Gradle Conventions.
@@ -36,6 +41,7 @@ public class JavaBasePlugin implements Plugin<Project> {
       p.getPluginManager().apply("checkstyle");
       p.getPluginManager().apply("com.github.spotbugs");
       p.getPluginManager().apply("com.github.ben-manes.versions");
+      p.getPluginManager().apply("org.owasp.dependencycheck");
       p.getPluginManager().apply("com.formkiq.gradle.graalvm-native-plugin");
       p.getPluginManager().apply("distribution");
 
@@ -103,6 +109,42 @@ public class JavaBasePlugin implements Plugin<Project> {
         cs.setConfigProperties(props);
         cs.setMaxWarnings(0);
         cs.setMaxErrors(0);
+      });
+
+      // OWASP Dependency Check
+      p.getExtensions().configure(DependencyCheckExtension.class, dc -> {
+        dc.setFormats(Arrays.asList("HTML", "JSON", "SARIF"));
+        dc.setFailBuildOnCVSS(7.0f);
+        dc.setScanConfigurations(Arrays.asList("runtimeClasspath"));
+        dc.setSkipTestGroups(true);
+        Object skipProjects = p.findProperty("dependencyCheckSkipProjects");
+        if (skipProjects != null) {
+          List<String> projectPaths = Arrays.stream(skipProjects.toString().split(","))
+              .map(String::trim)
+              .filter(s -> !s.isEmpty())
+              .collect(Collectors.toList());
+          dc.setSkipProjects(projectPaths);
+        }
+        dc.analyzers((AnalyzerExtension analyzers) -> {
+          analyzers.getNodeAudit().setEnabled(false);
+          analyzers.setOssIndexEnabled(true);
+          analyzers.ossIndex(ossIndex -> {
+            Object ossIndexUsername = p.findProperty("ossIndexUsername");
+            if (ossIndexUsername != null) {
+              ossIndex.setUsername(ossIndexUsername.toString());
+            }
+
+            Object ossIndexPassword = p.findProperty("ossIndexPassword");
+            if (ossIndexPassword != null) {
+              ossIndex.setPassword(ossIndexPassword.toString());
+            }
+          });
+        });
+
+        Object nvdKey = p.findProperty("nvdKey");
+        if (nvdKey != null) {
+          dc.nvd(nvd -> nvd.setApiKey(nvdKey.toString()));
+        }
       });
 
       // Compiler flags
