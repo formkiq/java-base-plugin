@@ -1,11 +1,13 @@
 plugins {
   id 'java-gradle-plugin'
-  id "com.gradle.plugin-publish" version "2.0.0"
-  id 'com.diffplug.spotless' version '7.2.1'
+  id "com.gradle.plugin-publish" version "2.1.0"
+  id 'com.diffplug.spotless' version '8.3.0'
+  id 'org.owasp.dependencycheck' version '12.2.0'
+  id "com.github.ben-manes.versions" version "0.53.0"
 }
 
 group   'com.formkiq.gradle'
-version '1.0.8'
+version '1.0.9'
 
 allprojects {
   apply plugin: 'com.diffplug.spotless'
@@ -17,14 +19,15 @@ repositories {
 }
 
 dependencies {
-  implementation 'com.github.spotbugs:com.github.spotbugs.gradle.plugin:6.4.1'
-  implementation 'com.diffplug.spotless:com.diffplug.spotless.gradle.plugin:7.2.1'
-  implementation 'com.github.ben-manes.versions:com.github.ben-manes.versions.gradle.plugin:0.52.0'
-  implementation 'com.formkiq.gradle.graalvm-native-plugin:com.formkiq.gradle.graalvm-native-plugin.gradle.plugin:1.7.6'
+  implementation 'com.github.spotbugs:com.github.spotbugs.gradle.plugin:6.4.8'
+  implementation 'com.diffplug.spotless:com.diffplug.spotless.gradle.plugin:8.3.0'
+  implementation 'com.github.ben-manes.versions:com.github.ben-manes.versions.gradle.plugin:0.53.0'
+  implementation 'com.formkiq.gradle.graalvm-native-plugin:com.formkiq.gradle.graalvm-native-plugin.gradle.plugin:1.7.7'
+  implementation 'org.owasp.dependencycheck:org.owasp.dependencycheck.gradle.plugin:12.2.0'
 
   // can use for local graalvm.native-plugin use
-  // implementation "com.formkiq.gradle:graalvm-native-plugin:1.7.6"
-  testImplementation platform("org.spockframework:spock-bom:2.3-groovy-4.0")
+  // implementation "com.formkiq.gradle:graalvm-native-plugin:1.7.7"
+  testImplementation platform("org.spockframework:spock-bom:2.4-groovy-5.0")
   testImplementation 'org.spockframework:spock-core'
 }
 

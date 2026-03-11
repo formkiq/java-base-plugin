@@ -11,6 +11,7 @@ Features:
 - SpotBugs (HTML reports, shared exclude filter)
 - Checkstyle (10.12.4, project-relative config)
 - Gradle Versions plugin
+- OWASP Dependency Check conventions
 - GraalVM Native plugin (FormKiQ)
 - Repositories: `mavenLocal`, `mavenCentral`, Sonatype snapshots (optional)
 
