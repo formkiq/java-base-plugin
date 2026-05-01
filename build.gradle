@@ -6,11 +6,24 @@ plugins {
   id "com.github.ben-manes.versions" version "0.53.0"
 }
 
+def isNonStable = { String version ->
+  def normalizedVersion = version.toUpperCase()
+  def stableKeyword = ['RELEASE', 'FINAL', 'GA'].any { normalizedVersion.contains(it) }
+  def stableVersion = version ==~ /^[0-9,.v-]+(-r)?$/
+  return !stableKeyword && !stableVersion
+}
+
 group   'com.formkiq.gradle'
-version '1.0.9'
+version '1.0.10'
 
 allprojects {
   apply plugin: 'com.diffplug.spotless'
+
+  tasks.matching { it.name == 'dependencyUpdates' }.configureEach {
+    rejectVersionIf {
+      isNonStable(it.candidate.version)
+    }
+  }
 }
 
 repositories {

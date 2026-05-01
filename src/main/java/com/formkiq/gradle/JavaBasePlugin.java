@@ -13,11 +13,11 @@ import org.gradle.jvm.toolchain.JavaLanguageVersion;
 import org.owasp.dependencycheck.gradle.extension.AnalyzerExtension;
 import org.owasp.dependencycheck.gradle.extension.DependencyCheckExtension;
 
+import java.io.File;
 import java.util.Arrays;
-import java.util.List;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 /**
  * {@link Plugin} for FormKiQ Gradle Conventions.
@@ -26,8 +26,23 @@ public class JavaBasePlugin implements Plugin<Project> {
 
   /** Checkstyle Version. */
   private static final String CHECKSTYLE_TOOL_VERSION = "10.12.4";
+  /** Maximum number of parent directories to search for shared config files. */
+  private static final int MAX_CONFIG_PARENT_DEPTH = 3;
   /** Java version. */
   private static final int JAVA_VERSION = 17;
+
+  private static File findConfigFile(final Project project, final String fileName) {
+    File directory = project.getProjectDir();
+    for (int depth = 0; depth <= MAX_CONFIG_PARENT_DEPTH && directory != null; depth++) {
+      File candidate = new File(directory, fileName);
+      if (candidate.isFile()) {
+        return candidate;
+      }
+      directory = directory.getParentFile();
+    }
+
+    return project.file(fileName);
+  }
 
   @Override
   public void apply(Project root) {
@@ -59,11 +74,11 @@ public class JavaBasePlugin implements Plugin<Project> {
       p.getExtensions().configure(SpotlessExtension.class, (SpotlessExtension s) -> {
         s.java(j -> {
           j.eclipse().sortMembersEnabled(true)
-              .configFile(p.getRootProject().file("spotless.eclipseformat.xml"));
+              .configFile(findConfigFile(p, "spotless.eclipseformat.xml"));
           j.removeUnusedImports();
-          j.removeWildcardImports();
+          j.forbidWildcardImports();
 
-          j.licenseHeaderFile(p.getRootProject().file("LICENSE"));
+          j.licenseHeaderFile(findConfigFile(p, "LICENSE"));
         });
         s.groovyGradle(g -> {
           g.target("*.gradle");
@@ -86,8 +101,8 @@ public class JavaBasePlugin implements Plugin<Project> {
       });
 
       // SpotBugs
-      p.getExtensions().configure(SpotBugsExtension.class, sb -> sb.getExcludeFilter()
-          .set(p.file(p.getRootDir() + "/config/gradle/spotbugs-exclude.xml")));
+      p.getExtensions().configure(SpotBugsExtension.class,
+          sb -> sb.getExcludeFilter().set(findConfigFile(p, "config/gradle/spotbugs-exclude.xml")));
 
       p.getTasks().withType(com.github.spotbugs.snom.SpotBugsTask.class).configureEach(t -> {
         if (t.getReports().findByName("html") == null) {
@@ -103,9 +118,11 @@ public class JavaBasePlugin implements Plugin<Project> {
       // Checkstyle
       p.getExtensions().configure(CheckstyleExtension.class, cs -> {
         cs.setToolVersion(CHECKSTYLE_TOOL_VERSION);
-        cs.setConfigFile(p.file("config/checkstyle/checkstyle.xml"));
+        cs.setConfigFile(findConfigFile(p, "config/checkstyle/checkstyle.xml"));
         Map<String, Object> props = new LinkedHashMap<>();
         props.put("project_loc", p.getProjectDir());
+        props.put("suppressions_file",
+            findConfigFile(p, "config/checkstyle/mysuppressions.xml").getAbsolutePath());
         cs.setConfigProperties(props);
         cs.setMaxWarnings(0);
         cs.setMaxErrors(0);
@@ -115,14 +132,12 @@ public class JavaBasePlugin implements Plugin<Project> {
       p.getExtensions().configure(DependencyCheckExtension.class, dc -> {
         dc.setFormats(Arrays.asList("HTML", "JSON", "SARIF"));
         dc.setFailBuildOnCVSS(7.0f);
-        dc.setScanConfigurations(Arrays.asList("runtimeClasspath"));
+        dc.setScanConfigurations(List.of("runtimeClasspath"));
         dc.setSkipTestGroups(true);
         Object skipProjects = p.findProperty("dependencyCheckSkipProjects");
         if (skipProjects != null) {
           List<String> projectPaths = Arrays.stream(skipProjects.toString().split(","))
-              .map(String::trim)
-              .filter(s -> !s.isEmpty())
-              .collect(Collectors.toList());
+              .map(String::trim).filter(s -> !s.isEmpty()).toList();
           dc.setSkipProjects(projectPaths);
         }
         dc.analyzers((AnalyzerExtension analyzers) -> {
@@ -156,12 +171,6 @@ public class JavaBasePlugin implements Plugin<Project> {
         t.useJUnitPlatform();
         t.setMinHeapSize("1g");
         t.setMaxHeapSize("2g");
-      });
-
-      p.afterEvaluate(prj -> {
-        if (!prj.file("config/checkstyle/checkstyle.xml").exists()) {
-          prj.getLogger().warn("Checkstyle config not found at config/checkstyle/checkstyle.xml");
-        }
       });
     });
 
