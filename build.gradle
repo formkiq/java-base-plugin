@@ -1,7 +1,7 @@
 plugins {
   id 'java-gradle-plugin'
   id "com.gradle.plugin-publish" version "2.1.0"
-  id 'com.diffplug.spotless' version '8.3.0'
+  id 'com.diffplug.spotless' version '8.1.0'
   id 'org.owasp.dependencycheck' version '12.2.0'
   id "com.github.ben-manes.versions" version "0.53.0"
 }
@@ -14,7 +14,7 @@ def isNonStable = { String version ->
 }
 
 group   'com.formkiq.gradle'
-version '1.0.10'
+version '1.0.11'
 
 allprojects {
   apply plugin: 'com.diffplug.spotless'
@@ -33,7 +33,7 @@ repositories {
 
 dependencies {
   implementation 'com.github.spotbugs:com.github.spotbugs.gradle.plugin:6.4.8'
-  implementation 'com.diffplug.spotless:com.diffplug.spotless.gradle.plugin:8.3.0'
+  implementation 'com.diffplug.spotless:com.diffplug.spotless.gradle.plugin:8.1.0'
   implementation 'com.github.ben-manes.versions:com.github.ben-manes.versions.gradle.plugin:0.53.0'
   implementation 'com.formkiq.gradle.graalvm-native-plugin:com.formkiq.gradle.graalvm-native-plugin.gradle.plugin:1.7.7'
   implementation 'org.owasp.dependencycheck:org.owasp.dependencycheck.gradle.plugin:12.2.0'
