@@ -82,7 +82,6 @@ public class JavaBasePlugin implements Plugin<Project> {
         });
         s.groovyGradle(g -> {
           g.target("*.gradle");
-          g.greclipse();
           g.leadingTabsToSpaces(2);
           g.trimTrailingWhitespace();
           g.endWithNewline();

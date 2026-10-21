@@ -7,13 +7,17 @@ Reusable **Gradle convention plugin** for FormKiQ Java projects.
 
 Features:
 - Java Toolchain (17)
-- Spotless (Java + Gradle files)
+- Spotless (Java formatting + local whitespace checks for Gradle files)
 - SpotBugs (HTML reports, shared exclude filter)
 - Checkstyle (10.12.4, project-relative config)
 - Gradle Versions plugin
 - OWASP Dependency Check conventions
 - GraalVM Native plugin (FormKiQ)
 - Repositories: `mavenLocal`, `mavenCentral`, Sonatype snapshots (optional)
+
+Gradle files use local checks for two-space tab expansion, trailing whitespace, and a final newline.
+They do not use Groovy-Eclipse or contact Eclipse update sites. Full Groovy indentation and wrapping
+are no longer enforced. Java and XML formatting are unchanged.
 
 ## Quick start
 

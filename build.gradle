@@ -14,7 +14,7 @@ def isNonStable = { String version ->
 }
 
 group   'com.formkiq.gradle'
-version '1.0.11'
+version '1.0.12'
 
 allprojects {
   apply plugin: 'com.diffplug.spotless'
@@ -56,7 +56,6 @@ spotless {
   }
   groovyGradle {
     target '**/*.gradle'
-    greclipse()
     leadingTabsToSpaces(2)
     trimTrailingWhitespace()
     endWithNewline()
