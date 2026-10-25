@@ -5,8 +5,11 @@ Reusable **Gradle convention plugin** for FormKiQ Java projects.
 
 **Plugin ID:** `com.formkiq.gradle.java-base`
 
+Build with JDK 25 and the included Gradle 9.8.2 wrapper (`./gradlew`). Projects applying
+this plugin require JDK 25 and Gradle 9.1.0 or newer.
+
 Features:
-- Java Toolchain (17)
+- Configurable Java toolchain (defaults to 25)
 - Spotless (Java formatting + local whitespace checks for Gradle files)
 - SpotBugs (HTML reports, shared exclude filter)
 - Checkstyle (10.12.4, project-relative config)
@@ -20,6 +23,24 @@ They do not use Groovy-Eclipse or contact Eclipse update sites. Full Groovy inde
 are no longer enforced. Java and XML formatting are unchanged.
 
 ## Quick start
+
+### Set the JVM version
+
+Set `jvmVersion` in your project's `gradle.properties` to choose the Java toolchain
+used for compilation and tests in the root project and all subprojects:
+
+```properties
+jvmVersion=21
+```
+
+You can also override it for a single build:
+
+```shell
+./gradlew build -PjvmVersion=21
+```
+
+The default is Java 25. This setting selects the project toolchain; running Gradle
+and loading this plugin still require JDK 25.
 
 ### Apply Gradle plugin
 

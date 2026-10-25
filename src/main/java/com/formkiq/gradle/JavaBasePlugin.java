@@ -28,8 +28,8 @@ public class JavaBasePlugin implements Plugin<Project> {
   private static final String CHECKSTYLE_TOOL_VERSION = "10.12.4";
   /** Maximum number of parent directories to search for shared config files. */
   private static final int MAX_CONFIG_PARENT_DEPTH = 3;
-  /** Java version. */
-  private static final int JAVA_VERSION = 17;
+  /** Default Java toolchain version. */
+  private static final int DEFAULT_JVM_VERSION = 25;
 
   private static File findConfigFile(final Project project, final String fileName) {
     File directory = project.getProjectDir();
@@ -66,9 +66,11 @@ public class JavaBasePlugin implements Plugin<Project> {
       p.getRepositories()
           .maven(repo -> repo.setUrl("https://central.sonatype.com/repository/maven-snapshots/"));
 
-      // Java toolchain 17
+      // Configurable Java toolchain, defaulting to Java 25
       JavaPluginExtension java = p.getExtensions().getByType(JavaPluginExtension.class);
-      java.getToolchain().getLanguageVersion().set(JavaLanguageVersion.of(JAVA_VERSION));
+      java.getToolchain().getLanguageVersion()
+          .convention(p.getProviders().gradleProperty("jvmVersion").map(Integer::parseInt)
+              .map(JavaLanguageVersion::of).orElse(JavaLanguageVersion.of(DEFAULT_JVM_VERSION)));
 
       // Spotless
       p.getExtensions().configure(SpotlessExtension.class, (SpotlessExtension s) -> {
